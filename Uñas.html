@@ -197,7 +197,7 @@
         alert('Completa todos los campos.');
         return;
       }
-      const mensaje = `Hola, soy ${nombre}. Quiero agendar una cita:%0A- Servicio: ${servicio}%0A- Fecha: ${fecha}%0A- Hora: ${hora}`;
+      const mensaje = `Hola Karina, te comparto una nueva cita agendada:%0A- Nombre del cliente: ${nombre}%0A- Servicio: ${servicio}%0A- Fecha: ${fecha}%0A- Hora: ${hora}`;
       window.open(`https://wa.me/529991738710?text=${mensaje}`, '_blank');
 
       citas.push({ nombre, servicio, fecha, hora });
