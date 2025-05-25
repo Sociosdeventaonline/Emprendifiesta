@@ -43,13 +43,15 @@
       display: block;
       margin-top: 15px;
       font-weight: bold;
+      font-size: 18px;
     }
-    input[type="text"], select, input[type="date"], input[type="time"] {
+    input[type="text"], input[type="password"], select, input[type="date"], input[type="time"] {
       width: 100%;
-      padding: 10px;
-      margin-top: 5px;
+      padding: 12px;
+      margin-top: 8px;
       border-radius: 5px;
       border: 1px solid #ccc;
+      font-size: 16px;
     }
     .btn {
       display: block;
@@ -58,8 +60,8 @@
       background-color: #d5678c;
       color: white;
       border: none;
-      padding: 10px;
-      font-size: 16px;
+      padding: 12px;
+      font-size: 17px;
       border-radius: 5px;
       cursor: pointer;
     }
@@ -75,7 +77,7 @@
       background-color: #fff;
       border: 1px solid #ccc;
       border-radius: 5px;
-      font-size: 14px;
+      font-size: 15px;
     }
     .agenda-lista ul {
       list-style: none;
@@ -90,6 +92,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      font-size: 15px;
     }
     .agenda-lista button {
       background: #e94e77;
@@ -98,6 +101,12 @@
       border-radius: 5px;
       padding: 5px 10px;
       cursor: pointer;
+    }
+    #mensajeLogin {
+      text-align: right;
+      margin-right: 20px;
+      color: green;
+      font-weight: bold;
     }
     @media (max-width: 768px) {
       .formulario, .agenda-lista {
@@ -113,6 +122,7 @@
       <input type="text" id="usuario" placeholder="Usuario">
       <input type="password" id="contrasena" placeholder="Contraseña">
       <button onclick="login()">Ingresar</button>
+      <div id="mensajeLogin"></div>
     </div>
   </header>
   <div class="container">
@@ -138,7 +148,7 @@
       <div id="descripcion" class="descripcion"></div>
 
       <label for="fecha">Fecha:</label>
-      <input type="date" id="fecha">
+      <input type="date" id="fecha" style="margin-bottom: 10px;">
 
       <label for="hora">Hora:</label>
       <input type="time" id="hora">
@@ -151,7 +161,7 @@
       <button class="btn" onclick="agendarCita()">Confirmar y Enviar por WhatsApp</button>
     </div>
 
-    <div class="agenda-lista">
+    <div class="agenda-lista" style="display:none;">
       <h2>Agenda</h2>
       <ul id="lista-citas"></ul>
     </div>
@@ -171,6 +181,7 @@
     };
 
     let citas = [];
+    let vendedorLogueado = false;
 
     function mostrarDescripcion() {
       const servicio = document.getElementById('servicios').value;
@@ -198,7 +209,13 @@
       lista.innerHTML = '';
       citas.forEach((cita, i) => {
         const li = document.createElement('li');
-        li.innerHTML = `${cita.nombre} - ${cita.servicio} - ${cita.fecha} ${cita.hora} <button onclick="eliminarCita(${i})">Eliminar</button>`;
+        li.innerHTML = `${cita.nombre} - ${cita.servicio} - ${cita.fecha} ${cita.hora}`;
+        if (vendedorLogueado) {
+          const btnEliminar = document.createElement('button');
+          btnEliminar.innerText = 'Eliminar';
+          btnEliminar.onclick = () => eliminarCita(i);
+          li.appendChild(btnEliminar);
+        }
         lista.appendChild(li);
       });
     }
@@ -211,9 +228,16 @@
     function login() {
       const usuario = document.getElementById('usuario').value;
       const contrasena = document.getElementById('contrasena').value;
+      const mensaje = document.getElementById('mensajeLogin');
+
       if (usuario === 'karina' && contrasena === '1234') {
+        vendedorLogueado = true;
         document.querySelector('.agenda-lista').style.display = 'block';
+        mensaje.innerText = 'Inicio de sesión exitoso';
+        renderCitas();
       } else {
+        vendedorLogueado = false;
+        mensaje.innerText = '';
         alert('Credenciales incorrectas');
       }
     }
