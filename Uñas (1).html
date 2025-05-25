@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agenda tu cita - Uñas by Karina</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Roboto&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #f8e9f0;
+      margin: 0;
+      padding: 0;
+      color: #4b1f49;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+    }
+    header img {
+      height: 50px;
+      margin-right: 10px;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      padding: 20px;
+    }
+    h1, h2 {
+      text-align: center;
+      color: #7b2f83;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    select, input[type="date"], input[type="time"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    .btn {
+      display: block;
+      width: 100%;
+      margin-top: 20px;
+      background-color: #d5678c;
+      color: white;
+      border: none;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .note {
+      margin-top: 20px;
+      background: #fbe6f2;
+      padding: 15px;
+      border-left: 5px solid #d5678c;
+    }
+    .menu-link {
+      display: block;
+      margin-bottom: 20px;
+      text-align: center;
+      text-decoration: none;
+      color: #7b2f83;
+    }
+    .descripcion {
+      margin-top: 10px;
+      padding: 10px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="img/logo_emprendifiesta.png" alt="Emprendifiesta Logo">
+  </header>
+  <div class="container">
+    <a href="index.html" class="menu-link">&#8592; Regresar al Menú Principal</a>
+    <h1>Agendar Cita - Uñas by Karina</h1>
+
+    <label for="servicios">Especifica el servicio que deseas:</label>
+    <select id="servicios" name="servicios" multiple onchange="mostrarDescripcion()">
+      <option value="Acrílicas esculturales">Acrílicas esculturales</option>
+      <option value="Gel semipermanente">Gel semipermanente</option>
+      <option value="Baño de acrílico">Baño de acrílico</option>
+      <option value="Manicura spa">Manicura spa</option>
+      <option value="Manicura ruso">Manicura ruso</option>
+      <option value="Pedicura spa">Pedicura spa</option>
+      <option value="Acripie">Acripie</option>
+      <option value="Retoque">Retoque</option>
+      <option value="Retiro">Retiro</option>
+    </select>
+
+    <div id="descripcion" class="descripcion"></div>
+
+    <label for="fecha">Selecciona la fecha:</label>
+    <input type="date" id="fecha">
+
+    <label for="hora">Selecciona la hora:</label>
+    <input type="time" id="hora">
+
+    <div class="note">
+      <p><strong>Realiza el pago de un anticipo por 100 MXN</strong>, monto que será descontado del precio final en un plazo máximo de 24 hrs. De lo contrario la cita apartada pasará a estar disponible de nuevo sin excepción.</p>
+      <p><strong>Cuenta:</strong> 1234567890 Banco Ejemplo</p>
+    </div>
+
+    <button class="btn" onclick="enviarWhatsApp()">Confirmar y Enviar por WhatsApp</button>
+  </div>
+
+  <script>
+    const descripciones = {
+      'Acrílicas esculturales': 'Extensiones de uñas artificiales hechas de polímero acrílico, con diseños personalizados.',
+      'Gel semipermanente': 'Aplicación de gel sobre uña natural que se endurece con lámpara LED. Ideal para un acabado duradero y brillante.',
+      'Baño de acrílico': 'El polvo acrílico se adhiere directamente a la uña natural respetando su largo natural. Refuerza sin extender.',
+      'Manicura spa': 'Tratamiento integral con remojo en sales minerales, exfoliación, cuidado de cutículas, masaje y mascarilla.',
+      'Manicura ruso': 'Técnica con pulidora que deja la zona de la cutícula impecable. Precisión y limpieza profunda.',
+      'Pedicura spa': 'Tratamiento relajante para pies con remojo, exfoliación, mascarilla, masaje y gel semipermanente.',
+      'Acripie': 'Técnica en acrílico que da estructura a las uñas de los pies. Incluye pedicure express.',
+      'Retoque': 'Mantén tus uñas acrílicas en su mejor estado. Incluye manicure express. Nota: No se realizan retoques de trabajos externos.',
+      'Retiro': 'Eliminación cuidadosa de técnicas aplicadas previamente, sin dañar la uña natural. Incluye manicure o pedicure express.'
+    };
+
+    function mostrarDescripcion() {
+      const seleccion = Array.from(document.getElementById('servicios').selectedOptions);
+      const descripcion = seleccion.map(option => `<strong>${option.value}:</strong> ${descripciones[option.value]}`).join('<br><br>');
+      document.getElementById('descripcion').innerHTML = descripcion;
+    }
+
+    function enviarWhatsApp() {
+      const servicios = Array.from(document.getElementById('servicios').selectedOptions).map(option => option.value).join(', ');
+      const fecha = document.getElementById('fecha').value;
+      const hora = document.getElementById('hora').value;
+
+      if (!servicios || !fecha || !hora) {
+        alert('Por favor completa todos los campos.');
+        return;
+      }
+
+      const mensaje = `Hola, quiero agendar una cita con los siguientes datos:%0A- Servicios: ${servicios}%0A- Fecha: ${fecha}%0A- Hora: ${hora}`;
+      const numero = '9991738710';
+      window.open(`https://wa.me/52${numero}?text=${mensaje}`, '_blank');
+    }
+  </script>
+</body>
+</html>
