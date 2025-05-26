@@ -1,79 +1,218 @@
-<html>
+<!DOCTYPE html>
+<html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Agenda tu cita - UÃ±as by Karina</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agenda tu cita - Uñas by Karina</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Roboto&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #f8e9f0;
+      margin: 0;
+      padding: 0;
+      color: #4b1f49;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 20px;
+      background: #fff;
+    }
+    header img {
+      height: 50px;
+    }
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 20px;
+    }
+    .formulario, .agenda-lista {
+      flex: 1 1 300px;
+      max-width: 600px;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    h1, h2 {
+      text-align: center;
+      color: #7b2f83;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+      font-size: 18px;
+    }
+    input[type="text"], input[type="password"], select, input[type="date"], input[type="time"] {
+      width: 100%;
+      padding: 12px;
+      margin-top: 8px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+    .btn {
+      display: block;
+      width: 100%;
+      margin-top: 20px;
+      background-color: #d5678c;
+      color: white;
+      border: none;
+      padding: 12px;
+      font-size: 17px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .note {
+      margin-top: 20px;
+      background: #fbe6f2;
+      padding: 15px;
+      border-left: 5px solid #d5678c;
+    }
+    .descripcion {
+      margin-top: 10px;
+      padding: 10px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 15px;
+    }
+    .agenda-lista ul {
+      list-style: none;
+      padding: 0;
+    }
+    .agenda-lista li {
+      background: #fff;
+      margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 15px;
+    }
+    .agenda-lista button {
+      background: #e94e77;
+      border: none;
+      color: white;
+      border-radius: 5px;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+    #mensajeLogin {
+      text-align: right;
+      margin-right: 20px;
+      color: green;
+      font-weight: bold;
+    }
+    @media (max-width: 768px) {
+      .formulario, .agenda-lista {
+        max-width: 100%;
+      }
+    }
+  </style>
 </head>
 <body>
-  <img src="img/logo.png" alt="Logo principal" style="height: 60px;">
-  <img src="img/aurum.png" alt="Logo proveedor" style="height: 60px;">
-  <!-- CÃ³digo JS insertado desde canvas -->
+  <header>
+    <img src="img/logo.png" alt="Emprendefiesta Logo">
+    <button onclick="mostrarLogin()" style="padding: 8px 16px; background-color: #7b2f83; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px;">Ingresar como administrador</button>
+  </header>
+
+  <div id="loginBox" style="display: none; max-width: 300px; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); z-index: 1000;">
+    <label for="usuario" style="font-weight: bold; display: block; margin-bottom: 5px;">Usuario</label>
+    <input type="text" id="usuario" placeholder="Usuario" style="width: 90%; padding: 10px; margin: 0 auto 15px auto; display: block;">
+
+    <label for="contrasena" style="font-weight: bold; display: block; margin-bottom: 5px;">Contraseña</label>
+    <input type="password" id="contrasena" placeholder="Contraseña" style="width: 90%; padding: 10px; margin: 0 auto 15px auto; display: block;">
+
+    <button onclick="login()" style="padding: 10px 15px; background-color: #0073aa; color: white; border: none; border-radius: 5px; cursor: pointer;">Acceder</button>
+    <div id="mensajeLogin" style="margin-top: 10px;"></div>
+  </div>
+
+  <div class="container">
+    <div class="formulario">
+      <h1>Agendar Cita - Uñas by Karina</h1>
+      <label for="nombre">Nombre:</label>
+      <input type="text" id="nombre" placeholder="Tu nombre completo">
+
+      <label for="telefono">Teléfono:</label>
+      <input type="text" id="telefono" placeholder="Ej. 9991234567">
+
+      <label for="servicios">Selecciona el servicio:</label>
+      <select id="servicios" onchange="mostrarDescripcion()">
+        <option disabled selected>Selecciona uno</option>
+        <option value="Acrílicas esculturales">Acrílicas esculturales</option>
+        <option value="Gel semipermanente">Gel semipermanente</option>
+        <option value="Baño de acrílico">Baño de acrílico</option>
+        <option value="Manicura spa">Manicura spa</option>
+        <option value="Manicura ruso">Manicura ruso</option>
+        <option value="Pedicura spa">Pedicura spa</option>
+        <option value="Acripie">Acripie</option>
+        <option value="Retoque">Retoque</option>
+        <option value="Retiro">Retiro</option>
+      </select>
+
+      <div id="descripcion" class="descripcion"></div>
+
+      <label for="fecha">Fecha:</label>
+      <input type="date" id="fecha" style="margin-bottom: 10px;">
+
+      <label for="hora">Hora:</label>
+      <input type="time" id="hora">
+
+      <div class="note">
+        <p><strong>Realiza el pago de un anticipo por 100 MXN</strong> para confirmar tu cita.</p>
+        <p><strong>Cuenta:</strong> 1234567890 Banco Ejemplo</p>
+      </div>
+
+      <button class="btn" onclick="agendarCita()">Confirmar y Enviar por WhatsApp</button>
+    </div>
+
+    <div class="agenda-lista">
+      <div style="text-align: center; margin-bottom: 15px;">
+        <!-- Aquí puedes poner el logo del proveedor -->
+        <img src="img/aurum.png" alt="Logo del proveedor" style="max-height: 110px;">
+      </div>
+      <h2>Agenda</h2>
+      <ul id="lista-citas"></ul>
+    </div>
+  </div>
+
   <script>
+    const descripciones = {
+      'Acrílicas esculturales': 'Extensiones de uñas artificiales hechas de polímero acrílico, con diseños personalizados.',
+      'Gel semipermanente': 'Aplicación de gel sobre uña natural endurecido con lámpara LED.',
+      'Baño de acrílico': 'Polvo acrílico en la uña natural para reforzar sin alargar.',
+      'Manicura spa': 'Tratamiento completo con exfoliación, masaje y mascarilla.',
+      'Manicura ruso': 'Técnica con pulidora para cutículas impecables.',
+      'Pedicura spa': 'Exfoliación, mascarilla y masaje para pies.',
+      'Acripie': 'Acrílico en pies con pedicure express.',
+      'Retoque': 'Retoque de uñas acrílicas. No se retocan trabajos externos.',
+      'Retiro': 'Remoción cuidadosa con manicure/pedicure express.'
+    };
+
     let citas = [];
     let vendedorLogueado = false;
 
-    function mostrarLogin() {
-      const loginBox = document.getElementById('loginBox');
-      loginBox.style.display = loginBox.style.display === 'none' ? 'block' : 'none';
-    }
-
-    function login() {
-      const usuario = document.getElementById('usuario').value;
-      const contrasena = document.getElementById('contrasena').value;
-      const mensaje = document.getElementById('mensajeLogin');
-
-      if (usuario === 'karina' && contrasena === '1234') {
-        vendedorLogueado = true;
-        document.getElementById('loginBox').style.display = 'none';
-        mensaje.innerText = 'Inicio de sesiÃ³n exitoso';
-        document.getElementById('panelAdmin').style.display = 'block';
-        document.querySelector('.agenda-lista').style.display = 'block';
-        renderCitas();
-
-        // Mostrar botÃ³n de cerrar sesiÃ³n
-        const cerrarSesionBtn = document.createElement('button');
-        cerrarSesionBtn.innerText = 'Cerrar sesiÃ³n';
-        cerrarSesionBtn.style.marginTop = '20px';
-        cerrarSesionBtn.style.backgroundColor = '#bbb';
-        cerrarSesionBtn.style.color = '#000';
-        cerrarSesionBtn.style.border = 'none';
-        cerrarSesionBtn.style.padding = '10px 20px';
-        cerrarSesionBtn.style.borderRadius = '5px';
-        cerrarSesionBtn.style.cursor = 'pointer';
-        cerrarSesionBtn.onclick = () => cerrarSesion();
-        document.getElementById('panelAdmin').appendChild(cerrarSesionBtn);
-      } else {
-        mensaje.innerText = 'Credenciales incorrectas';
-      }
+    function mostrarDescripcion() {
+      const servicio = document.getElementById('servicios').value;
+      document.getElementById('descripcion').innerHTML = descripciones[servicio] || '';
     }
 
     function agendarCita() {
       const nombre = document.getElementById('nombre').value;
-      const telefono = document.getElementById('telefono').value;
       const servicio = document.getElementById('servicios').value;
       const fecha = document.getElementById('fecha').value;
       const hora = document.getElementById('hora').value;
-      const limite = parseInt(document.getElementById('limiteCitas').value);
-      const horaInicio = document.getElementById('horaInicio').value;
-      const horaFin = document.getElementById('horaFin').value;
-
-      if (!nombre || !telefono || !servicio || !fecha || !hora) {
+      if (!nombre || !servicio || !fecha || !hora) {
         alert('Completa todos los campos.');
         return;
       }
-
-      if ((horaInicio && hora < horaInicio) || (horaFin && hora > horaFin)) {
-        alert('La hora seleccionada estÃ¡ fuera del horario permitido.');
-        return;
-      }
-
-      const citasDelDia = citas.filter(c => c.fecha === fecha);
-      if (!isNaN(limite) && citasDelDia.length >= limite) {
-        alert('Ya se alcanzÃ³ el lÃ­mite de citas para este dÃ­a.');
-        return;
-      }
-
-      const mensaje = `Hola Karina, te comparto una nueva cita agendada:%0A- Nombre del cliente: ${nombre}%0A- TelÃ©fono: ${telefono}%0A- Servicio: ${servicio}%0A- Fecha: ${fecha}%0A- Hora: ${hora}`;
-      window.open(`https://wa.me/529991738710?text=${mensaje}`, '_blank');
+      const mensaje = Hola Karina, te comparto una nueva cita agendada:%0A- Nombre del cliente: ${nombre}%0A- Servicio: ${servicio}%0A- Fecha: ${fecha}%0A- Hora: ${hora};
+      window.open(https://wa.me/529991738710?text=${mensaje}, '_blank');
 
       citas.push({ nombre, telefono, servicio, fecha, hora });
       renderCitas();
@@ -81,11 +220,10 @@
 
     function renderCitas() {
       const lista = document.getElementById('lista-citas');
-      if (!lista) return;
       lista.innerHTML = '';
       citas.forEach((cita, i) => {
         const li = document.createElement('li');
-        li.innerHTML = `${cita.nombre} - ${cita.telefono} - ${cita.servicio} - ${cita.fecha} ${cita.hora}`;
+        li.innerHTML = ${cita.nombre} - ${cita.telefono} - ${cita.servicio} - ${cita.fecha} ${cita.hora};
         if (vendedorLogueado) {
           const btnEliminar = document.createElement('button');
           btnEliminar.innerText = 'Eliminar';
@@ -107,17 +245,32 @@
       renderCitas();
     }
 
-    function cerrarSesion() {
-      vendedorLogueado = false;
-      document.getElementById('panelAdmin').style.display = 'none';
-      document.querySelector('.agenda-lista').style.display = 'none';
-      document.getElementById('mensajeLogin').innerText = '';
-      mostrarLogin();
+    function login() {
+      const usuario = document.getElementById('usuario').value;
+      const contrasena = document.getElementById('contrasena').value;
+      const mensaje = document.getElementById('mensajeLogin');
+
+      if (usuario === 'karina' && contrasena === '1234') {
+        vendedorLogueado = true;
+        document.querySelector('.agenda-lista').style.display = 'block';
+        document.getElementById('loginBox').style.display = 'none';
+        mensaje.innerText = 'Inicio de sesión exitoso';
+        renderCitas();
+      } else {
+        vendedorLogueado = false;
+        mensaje.innerText = '';
+        alert('Credenciales incorrectas');
+      }
+    }
+
+    function mostrarLogin() {
+      const loginBox = document.getElementById('loginBox');
+      loginBox.style.display = loginBox.style.display === 'none' ? 'block' : 'none';
     }
 
     function enviarRecordatorio(cita) {
-      const mensaje = `Hola ${cita.nombre}, este es un recordatorio de tu cita con Karina:%0A- Servicio: ${cita.servicio}%0A- Fecha: ${cita.fecha}%0A- Hora: ${cita.hora}`;
-      window.open(`https://wa.me/52?text=${mensaje}`, '_blank');
+      const mensaje = Hola ${cita.nombre}, este es un recordatorio de tu cita con Karina:%0A- Servicio: ${cita.servicio}%0A- Fecha: ${cita.fecha}%0A- Hora: ${cita.hora};
+      window.open(https://wa.me/52?text=${mensaje}, '_blank');
     }
   </script>
 </body>
