@@ -186,14 +186,14 @@
   <script>
     const descripciones = {
       'Acrílicas esculturales': 'Extensiones de uñas artificiales hechas de polímero acrílico, con diseños personalizados.',
-      'Gel semipermanente': 'Aplicación de gel sobre uña natural endurecido con lámpara LED.',
-      'Baño de acrílico': 'Polvo acrílico en la uña natural para reforzar sin alargar.',
-      'Manicura spa': 'Tratamiento completo con exfoliación, masaje y mascarilla.',
-      'Manicura ruso': 'Técnica con pulidora para cutículas impecables.',
-      'Pedicura spa': 'Exfoliación, mascarilla y masaje para pies.',
-      'Acripie': 'Acrílico en pies con pedicure express.',
-      'Retoque': 'Retoque de uñas acrílicas. No se retocan trabajos externos.',
-      'Retiro': 'Remoción cuidadosa con manicure/pedicure express.'
+      'Gel semipermanente': 'Aplicación de gel sobre uña natural que se endurece con lámpara LED. Ideal para un acabado duradero y brillante.',
+      'Baño de acrílico': 'El polvo acrílico se adhiere directamente a la uña natural respetando su largo natural. Refuerza sin extender.',
+      'Manicura spa': 'Tratamiento integral con remojo en sales minerales, exfoliación, cuidado de cutículas, masaje y mascarilla.',
+      'Manicura ruso': 'Técnica con pulidora que deja la zona de la cutícula impecable. Precisión y limpieza profunda.',
+      'Pedicura spa': 'Tratamiento relajante para pies con remojo, exfoliación, mascarilla, masaje y gel semipermanente.',
+      'Acripie': 'Técnica en acrílico que da estructura a las uñas de los pies. Incluye pedicure express.',
+      'Retoque': 'Mantén tus uñas acrílicas en su mejor estado. Incluye manicure express. Nota: No se realizan retoques de trabajos externos.',
+      'Retiro': 'Eliminación cuidadosa de técnicas aplicadas previamente, sin dañar la uña natural. Incluye manicure o pedicure express.'
     };
 
     let citas = [];
@@ -263,9 +263,7 @@
         mensaje.innerText = 'Inicio de sesión exitoso';
         renderCitas();
         mostrarBotonCerrarSesion();
-      
-    }
-    } else {
+      } else {
         vendedorLogueado = false;
         mensaje.innerText = 'Credenciales incorrectas';
       }
@@ -280,7 +278,8 @@
       const mensaje = `Hola ${cita.nombre}, este es un recordatorio de tu cita con Karina:%0A- Servicio: ${cita.servicio}%0A- Fecha: ${cita.fecha}%0A- Hora: ${cita.hora}`;
       window.open(`https://wa.me/52?text=${mensaje}`, '_blank');
     }
-function cerrarSesion() {
+
+    function cerrarSesion() {
       vendedorLogueado = false;
       document.querySelector('.agenda-lista').style.display = 'none';
       document.getElementById('logoutBox').style.display = 'none';
