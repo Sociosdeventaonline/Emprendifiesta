@@ -115,11 +115,14 @@
     }
   </style>
 </head>
-<body>
+<body onload="document.querySelector('.agenda-lista').style.display = 'none';">
   <header>
     <img src="img/logo.png" alt="Emprendefiesta Logo">
     <button onclick="mostrarLogin()" style="padding: 8px 16px; background-color: #7b2f83; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px;">Ingresar como administrador</button>
   </header>
+  <div id="logoutBox" style="display: none; text-align: center; margin: 10px;">
+    <button onclick="cerrarSesion()" style="padding: 8px 16px; background-color: #b23b66; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px;">Cerrar sesión</button>
+  </div>
 
   <div id="loginBox" style="display: none; max-width: 300px; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); z-index: 1000;">
     <label for="usuario" style="font-weight: bold; display: block; margin-bottom: 5px;">Usuario</label>
@@ -180,6 +183,113 @@
     </div>
   </div>
 
-  <!-- Tu JavaScript permanece igual al final del archivo -->
+  <script>
+    const descripciones = {
+      'Acrílicas esculturales': 'Extensiones de uñas artificiales hechas de polímero acrílico, con diseños personalizados.',
+      'Gel semipermanente': 'Aplicación de gel sobre uña natural endurecido con lámpara LED.',
+      'Baño de acrílico': 'Polvo acrílico en la uña natural para reforzar sin alargar.',
+      'Manicura spa': 'Tratamiento completo con exfoliación, masaje y mascarilla.',
+      'Manicura ruso': 'Técnica con pulidora para cutículas impecables.',
+      'Pedicura spa': 'Exfoliación, mascarilla y masaje para pies.',
+      'Acripie': 'Acrílico en pies con pedicure express.',
+      'Retoque': 'Retoque de uñas acrílicas. No se retocan trabajos externos.',
+      'Retiro': 'Remoción cuidadosa con manicure/pedicure express.'
+    };
+
+    let citas = [];
+    let vendedorLogueado = false;
+
+    function mostrarDescripcion() {
+      const servicio = document.getElementById('servicios').value;
+      document.getElementById('descripcion').innerHTML = descripciones[servicio] || '';
+    }
+
+    function agendarCita() {
+      const nombre = document.getElementById('nombre').value;
+      const telefono = document.getElementById('telefono').value;
+      const servicio = document.getElementById('servicios').value;
+      const fecha = document.getElementById('fecha').value;
+      const hora = document.getElementById('hora').value;
+
+      if (!nombre || !telefono || !servicio || !fecha || !hora) {
+        alert('Completa todos los campos.');
+        return;
+      }
+
+      const mensaje = `Hola Karina, te comparto una nueva cita agendada:%0A- Nombre del cliente: ${nombre}%0A- Teléfono: ${telefono}%0A- Servicio: ${servicio}%0A- Fecha: ${fecha}%0A- Hora: ${hora}`;
+      window.open(`https://wa.me/529991738710?text=${mensaje}`, '_blank');
+
+      citas.push({ nombre, telefono, servicio, fecha, hora });
+      renderCitas();
+    }
+
+    function renderCitas() {
+      const lista = document.getElementById('lista-citas');
+      if (!lista) return;
+      lista.innerHTML = '';
+      citas.forEach((cita, i) => {
+        const li = document.createElement('li');
+        li.innerHTML = `${cita.nombre} - ${cita.telefono} - ${cita.servicio} - ${cita.fecha} ${cita.hora}`;
+        if (vendedorLogueado) {
+          const btnEliminar = document.createElement('button');
+          btnEliminar.innerText = 'Eliminar';
+          btnEliminar.onclick = () => eliminarCita(i);
+          li.appendChild(btnEliminar);
+
+          const btnRecordatorio = document.createElement('button');
+          btnRecordatorio.innerText = 'Recordatorio';
+          btnRecordatorio.style.marginLeft = '5px';
+          btnRecordatorio.onclick = () => enviarRecordatorio(cita);
+          li.appendChild(btnRecordatorio);
+        }
+        lista.appendChild(li);
+      });
+    }
+
+    function eliminarCita(index) {
+      citas.splice(index, 1);
+      renderCitas();
+    }
+
+    function login() {
+      const usuario = document.getElementById('usuario').value;
+      const contrasena = document.getElementById('contrasena').value;
+      const mensaje = document.getElementById('mensajeLogin');
+
+      if (usuario === 'karina' && contrasena === '1234') {
+        vendedorLogueado = true;
+        document.querySelector('.agenda-lista').style.display = 'block';
+        document.getElementById('loginBox').style.display = 'none';
+        mensaje.innerText = 'Inicio de sesión exitoso';
+        renderCitas();
+        mostrarBotonCerrarSesion();
+      
+    }
+    } else {
+        vendedorLogueado = false;
+        mensaje.innerText = 'Credenciales incorrectas';
+      }
+    }
+
+    function mostrarLogin() {
+      const loginBox = document.getElementById('loginBox');
+      loginBox.style.display = loginBox.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function enviarRecordatorio(cita) {
+      const mensaje = `Hola ${cita.nombre}, este es un recordatorio de tu cita con Karina:%0A- Servicio: ${cita.servicio}%0A- Fecha: ${cita.fecha}%0A- Hora: ${cita.hora}`;
+      window.open(`https://wa.me/52?text=${mensaje}`, '_blank');
+    }
+function cerrarSesion() {
+      vendedorLogueado = false;
+      document.querySelector('.agenda-lista').style.display = 'none';
+      document.getElementById('logoutBox').style.display = 'none';
+      document.getElementById('mensajeLogin').innerText = '';
+    }
+
+    function mostrarBotonCerrarSesion() {
+      document.getElementById('logoutBox').style.display = 'block';
+    }
+  </script>
 </body>
 </html>
