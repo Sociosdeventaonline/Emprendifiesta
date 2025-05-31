@@ -298,7 +298,7 @@ document.getElementById('fecha').addEventListener('change', async function () {
   try {
     const db = window.db;
     const citasRef = collection(db, "citas");
-    const snapshot = await getDocs(query(citasRef, where("fecha", "==", inputFecha)));
+    const snapshot = await getDocs(query(citasRef, where("fecha", "==", valorFecha))); // ← ESTA LÍNEA YA ESTÁ BIEN
     const citasDelDia = snapshot.docs.map(doc => doc.data());
     const horasOcupadas = citasDelDia.map(cita => cita.hora);
 
