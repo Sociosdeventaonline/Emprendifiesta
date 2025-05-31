@@ -218,7 +218,7 @@ function login() {
     document.querySelector('.agenda-lista').style.display = 'block';
     document.getElementById('loginBox').style.display = 'none';
     mensaje.innerText = 'Inicio de sesión exitoso';
-    renderCitas(); // 🔥 esta función carga las citas desde Firebase
+    renderCitas(); // Esta es la que jala desde Firebase
     mostrarBotonCerrarSesion();
   } else {
     vendedorLogueado = false;
@@ -247,12 +247,10 @@ function login() {
       document.getElementById('logoutBox').style.display = 'block';
     }
   </script>
-  <script type="module">
-  // 1. Importa los SDKs de Firebase
+<script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-  import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+  import { getFirestore, collection, addDoc, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 
-  // 2. Configuración de tu Firebase
   const firebaseConfig = {
     apiKey: "AIzaSyBt86gD96-Z0y2Bb1H2YBnntmMPGukRLZ0",
     authDomain: "cita-de-unas.firebaseapp.com",
@@ -263,11 +261,9 @@ function login() {
     measurementId: "G-2JK7L0TCWV"
   };
 
-  // 3. Inicializa Firebase y Firestore
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  // 4. Agendar una cita (guardar en Firebase y enviar WhatsApp)
   window.agendarCita = async function () {
     const nombre = document.getElementById('nombre').value;
     const telefono = document.getElementById('telefono').value;
@@ -289,7 +285,7 @@ function login() {
       servicio,
       fecha,
       hora,
-      timestamp: new Date()
+      timestamp: serverTimestamp()
     });
 
     alert("✅ Cita guardada correctamente");
@@ -300,7 +296,6 @@ function login() {
     document.getElementById('hora').value = '';
   };
 
-  // 5. Mostrar todas las citas guardadas (al iniciar sesión)
   window.renderCitas = async function () {
     const lista = document.getElementById('lista-citas');
     lista.innerHTML = '';
