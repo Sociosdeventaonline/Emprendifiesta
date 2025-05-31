@@ -251,23 +251,23 @@
       renderCitas();
     }
 
-    function login() {
-      const usuario = document.getElementById('usuario').value;
-      const contrasena = document.getElementById('contrasena').value;
-      const mensaje = document.getElementById('mensajeLogin');
+function login() {
+  const usuario = document.getElementById('usuario').value;
+  const contrasena = document.getElementById('contrasena').value;
+  const mensaje = document.getElementById('mensajeLogin');
 
-      if (usuario === 'karina' && contrasena === '1234') {
-        vendedorLogueado = true;
-        document.querySelector('.agenda-lista').style.display = 'block';
-        document.getElementById('loginBox').style.display = 'none';
-        mensaje.innerText = 'Inicio de sesión exitoso';
-        renderCitas();
-        mostrarBotonCerrarSesion();
-      } else {
-        vendedorLogueado = false;
-        mensaje.innerText = 'Credenciales incorrectas';
-      }
-    }
+  if (usuario === 'karina' && contrasena === '1234') {
+    vendedorLogueado = true;
+    document.querySelector('.agenda-lista').style.display = 'block';
+    document.getElementById('loginBox').style.display = 'none';
+    mensaje.innerText = 'Inicio de sesión exitoso';
+    renderCitas(); // 🔥 esta función carga las citas desde Firebase
+    mostrarBotonCerrarSesion();
+  } else {
+    vendedorLogueado = false;
+    mensaje.innerText = 'Credenciales incorrectas';
+  }
+}
 
     function mostrarLogin() {
       const loginBox = document.getElementById('loginBox');
@@ -290,5 +290,71 @@
       document.getElementById('logoutBox').style.display = 'block';
     }
   </script>
+  <script type="module">
+  // 1. Importa los SDKs de Firebase
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+  import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+
+  // 2. Configuración de tu Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyBt86gD96-Z0y2Bb1H2YBnntmMPGukRLZ0",
+    authDomain: "cita-de-unas.firebaseapp.com",
+    projectId: "cita-de-unas",
+    storageBucket: "cita-de-unas.appspot.com",
+    messagingSenderId: "90298084135",
+    appId: "1:90298084135:web:e1a3d251f6d0af7c665682",
+    measurementId: "G-2JK7L0TCWV"
+  };
+
+  // 3. Inicializa Firebase y Firestore
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // 4. Agendar una cita (guardar en Firebase y enviar WhatsApp)
+  window.agendarCita = async function () {
+    const nombre = document.getElementById('nombre').value;
+    const telefono = document.getElementById('telefono').value;
+    const servicio = document.getElementById('servicios').value;
+    const fecha = document.getElementById('fecha').value;
+    const hora = document.getElementById('hora').value;
+
+    if (!nombre || !telefono || !servicio || !fecha || !hora) {
+      alert('Completa todos los campos.');
+      return;
+    }
+
+    const mensaje = `Hola Karina, nueva cita:%0A- Nombre: ${nombre}%0A- Tel: ${telefono}%0A- Servicio: ${servicio}%0A- Fecha: ${fecha}%0A- Hora: ${hora}`;
+    window.open(`https://wa.me/529991738710?text=${mensaje}`, '_blank');
+
+    await addDoc(collection(db, "citas"), {
+      nombre,
+      telefono,
+      servicio,
+      fecha,
+      hora,
+      timestamp: new Date()
+    });
+
+    alert("✅ Cita guardada correctamente");
+    document.getElementById('nombre').value = '';
+    document.getElementById('telefono').value = '';
+    document.getElementById('servicios').value = '';
+    document.getElementById('fecha').value = '';
+    document.getElementById('hora').value = '';
+  };
+
+  // 5. Mostrar todas las citas guardadas (al iniciar sesión)
+  window.renderCitas = async function () {
+    const lista = document.getElementById('lista-citas');
+    lista.innerHTML = '';
+    const querySnapshot = await getDocs(collection(db, "citas"));
+    querySnapshot.forEach((doc) => {
+      const cita = doc.data();
+      const li = document.createElement('li');
+      li.innerText = `${cita.nombre} - ${cita.telefono} - ${cita.servicio} - ${cita.fecha} ${cita.hora}`;
+      lista.appendChild(li);
+    });
+  };
+</script>
 </body>
 </html>
