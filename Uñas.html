@@ -420,8 +420,21 @@ window.renderCitas = function () {
   onSnapshot(citasRef, (snapshot) => {
     lista.innerHTML = ''; // Limpia antes de volver a pintar
 
+    const citas = [];
+
     snapshot.forEach((docSnap) => {
-      const cita = docSnap.data();
+      const data = docSnap.data();
+      citas.push({ id: docSnap.id, ...data });
+    });
+
+    // Ordenar las citas por fecha y hora
+    citas.sort((a, b) => {
+      const fechaA = new Date(`${a.fecha}T${a.hora}`);
+      const fechaB = new Date(`${b.fecha}T${b.hora}`);
+      return fechaA - fechaB;
+    });
+
+    citas.forEach((cita) => {
       const li = document.createElement('li');
       li.innerText = `${cita.nombre} - ${cita.telefono} - ${cita.servicio} - ${cita.fecha} ${cita.hora}`;
 
@@ -429,7 +442,7 @@ window.renderCitas = function () {
         const btnEliminar = document.createElement('button');
         btnEliminar.innerText = 'Eliminar';
         btnEliminar.onclick = async () => {
-          await deleteDoc(doc(db, "citas", docSnap.id));
+          await deleteDoc(doc(db, "citas", cita.id));
         };
         li.appendChild(btnEliminar);
 
@@ -447,6 +460,7 @@ window.renderCitas = function () {
     });
   });
 };
+
 </script>
 </body>
 </html>
