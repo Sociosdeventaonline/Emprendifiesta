@@ -163,8 +163,10 @@
       <label for="fecha">Fecha:</label>
       <input type="date" id="fecha" style="margin-bottom: 10px;">
 
-      <label for="hora">Hora:</label>
-      <input type="time" id="hora">
+<label for="hora">Hora:</label>
+<select id="hora" disabled>
+  <option value="">Selecciona una fecha primero</option>
+</select>
 
       <div class="note">
         <p><strong>Realiza el pago de un anticipo por 100 MXN</strong> para confirmar tu cita.</p>
@@ -241,6 +243,34 @@ function login() {
     function mostrarBotonCerrarSesion() {
       document.getElementById('logoutBox').style.display = 'block';
     }
+    document.getElementById('fecha').addEventListener('change', function () {
+  const fechaSeleccionada = new Date(this.value);
+  const diaSemana = fechaSeleccionada.getDay(); // 0 = Domingo, 2 = Martes, 4 = Jueves, 6 = Sábado
+  const horaSelect = document.getElementById('hora');
+  horaSelect.innerHTML = ''; // limpia opciones previas
+
+  const opcionesPorDia = {
+    0: ["08:00", "11:00", "14:00", "17:00"], // Domingo
+    2: ["20:00"],                            // Martes
+    4: ["20:00"],                            // Jueves
+    6: ["15:00", "18:00"]                    // Sábado
+  };
+
+  if (opcionesPorDia[diaSemana]) {
+    opcionesPorDia[diaSemana].forEach(hora => {
+      const option = document.createElement('option');
+      option.value = hora;
+      option.text = hora;
+      horaSelect.appendChild(option);
+    });
+    horaSelect.disabled = false;
+  } else {
+    horaSelect.disabled = true;
+    horaSelect.innerHTML = '<option value="">No disponible este día</option>';
+    alert("❌ Lo sentimos, ese día no está disponible para citas.");
+    this.value = '';
+  }
+});
   </script>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
