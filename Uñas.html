@@ -214,7 +214,8 @@ header {
       'Retiro': 'Eliminación cuidadosa de técnicas aplicadas previamente, sin dañar la uña natural. Incluye manicure o pedicure express.'
     };
 
-    let vendedorLogueado = false;
+   let vendedorLogueado = false;
+window.vendedorLogueado = vendedorLogueado;
     let ultimaActividad = Date.now();
 let temporizadorInactividad;
 
@@ -246,8 +247,9 @@ function login() {
   const contrasena = document.getElementById('contrasena').value;
   const mensaje = document.getElementById('mensajeLogin');
 
-  if (usuario === 'karina' && contrasena === '1234') {
-    vendedorLogueado = true;
+if (usuario === 'karina' && contrasena === '1234') {
+  vendedorLogueado = true;
+  window.vendedorLogueado = true;
     sessionStorage.setItem("logueado", "true");
     reiniciarTemporizadorInactividad();
     document.querySelector('.agenda-lista').style.display = 'block';
@@ -256,7 +258,8 @@ function login() {
     renderCitas(); // Esta es la que jala desde Firebase
     mostrarBotonCerrarSesion();
   } else {
-    vendedorLogueado = false;
+  vendedorLogueado = false;
+window.vendedorLogueado = false;
     mensaje.innerText = 'Credenciales incorrectas';
   }
 }
@@ -434,7 +437,7 @@ window.renderCitas = function () {
       return fechaA - fechaB;
     });
 
-    citas.forEach((cita) => {
+     citas.forEach((cita) => {
       const li = document.createElement('li');
       li.innerText = `${cita.nombre} - ${cita.telefono} - ${cita.servicio} - ${cita.fecha} ${cita.hora}`;
 
