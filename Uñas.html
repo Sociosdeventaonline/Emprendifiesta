@@ -115,7 +115,7 @@
     }
   </style>
 </head>
-<body onload="document.querySelector('.agenda-lista').style.display = 'none';">
+<body>
   <header>
     <img src="img/logo.png" alt="Emprendefiesta Logo">
     <button onclick="mostrarLogin()" style="padding: 8px 16px; background-color: #7b2f83; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px;">Ingresar como administrador</button>
@@ -274,21 +274,23 @@ function login() {
       document.getElementById('mensajeLogin').innerText = '';
     }
 
-document.addEventListener("DOMContentLoaded", () => {
+
+    function mostrarBotonCerrarSesion() {
+      document.getElementById('logoutBox').style.display = 'block';
+    }
+function mostrarAgendaSiLogueado() {
   if (sessionStorage.getItem("logueado") === "true") {
     vendedorLogueado = true;
     document.querySelector('.agenda-lista').style.display = 'block';
     mostrarBotonCerrarSesion();
     reiniciarTemporizadorInactividad();
-    renderCitas(); // ✅ Agrega esta línea
+    renderCitas(); // ✅ Aquí se cargan las citas en pantalla
+  } else {
+    document.querySelector('.agenda-lista').style.display = 'none';
   }
-});
+}
 
-
-
-    function mostrarBotonCerrarSesion() {
-      document.getElementById('logoutBox').style.display = 'block';
-    }
+document.addEventListener("DOMContentLoaded", mostrarAgendaSiLogueado);
 
 
   </script>
