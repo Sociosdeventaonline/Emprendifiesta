@@ -274,13 +274,19 @@ function login() {
       document.getElementById('mensajeLogin').innerText = '';
     }
 
-    if (sessionStorage.getItem("logueado") === "true") {
+if (sessionStorage.getItem("logueado") === "true") {
   vendedorLogueado = true;
   document.querySelector('.agenda-lista').style.display = 'block';
   mostrarBotonCerrarSesion();
-  renderCitas();
+
+  // Esperamos a que el DOM esté completamente cargado antes de ejecutar renderCitas
+  window.addEventListener('DOMContentLoaded', () => {
+    renderCitas();
+  });
+
   reiniciarTemporizadorInactividad();
 }
+
 
     function mostrarBotonCerrarSesion() {
       document.getElementById('logoutBox').style.display = 'block';
