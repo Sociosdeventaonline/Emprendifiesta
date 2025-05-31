@@ -269,54 +269,62 @@ function login() {
   const db = getFirestore(app);
   window.db = db;
 document.getElementById('fecha').addEventListener('change', async function () {
-  const fechaSeleccionada = new Date(this.value);
+  const valorFecha = this.value;
+  if (!valorFecha) return;
+
+  const [anio, mes, dia] = valorFecha.split('-');
+  const fechaSeleccionada = new Date(anio, mes - 1, dia);
   const diaSemana = fechaSeleccionada.getDay(); // 0 = Domingo, 2 = Martes, 4 = Jueves, 6 = Sábado
   const horaSelect = document.getElementById('hora');
   horaSelect.innerHTML = '';
 
   const opcionesPorDia = {
-    0: ["08:00", "11:00", "14:00", "17:00"], // Domingo (máximo 4 citas)
-    2: ["20:00"], // Martes (1 cita)
-    4: ["20:00"], // Jueves (1 cita)
-    6: ["15:00", "18:00"] // Sábado (2 citas)
+    0: ["08:00", "11:00", "14:00", "17:00"], // Domingo
+    2: ["20:00"], // Martes
+    4: ["20:00"], // Jueves
+    6: ["15:00", "18:00"] // Sábado
   };
 
-  const diaTexto = this.value;
   const opciones = opcionesPorDia[diaSemana];
 
   if (!opciones) {
     horaSelect.disabled = true;
     horaSelect.innerHTML = '<option value="">No disponible este día</option>';
-    alert("❌ Lo sentimos, ese día no está disponible para citas.");
+    alert("❌ Ese día no está disponible para citas.");
     this.value = '';
     return;
   }
 
-  // Firebase
-  const db = window.db; // Usa la instancia global de Firestore
-  const citasRef = collection(db, "citas");
+  try {
+    const db = window.db;
+    const citasRef = collection(db, "citas");
+    const snapshot = await getDocs(query(citasRef, where("fecha", "==", inputFecha)));
+    const citasDelDia = snapshot.docs.map(doc => doc.data());
+    const horasOcupadas = citasDelDia.map(cita => cita.hora);
 
-  const snapshot = await getDocs(query(citasRef, where("fecha", "==", diaTexto)));
-  const citasDelDia = snapshot.docs.map(doc => doc.data());
+    const horasDisponibles = opciones.filter(hora => !horasOcupadas.includes(hora));
 
-  const horasAgendadas = citasDelDia.map(c => c.hora);
-  const horasDisponibles = opciones.filter(hora => !horasAgendadas.includes(hora));
+    if (horasDisponibles.length === 0) {
+      horaSelect.disabled = true;
+      horaSelect.innerHTML = '<option value="">Ya no hay horarios disponibles para este día</option>';
+      alert("⚠️ Todas las citas están ocupadas para ese día.");
+      return;
+    }
 
-  if (horasDisponibles.length === 0) {
-    horaSelect.disabled = true;
-    horaSelect.innerHTML = '<option value="">Ya no hay horarios disponibles para este día</option>';
-    alert("⚠️ Ya se ocuparon todas las citas disponibles para ese día.");
-    return;
+    horasDisponibles.forEach(hora => {
+      const option = document.createElement('option');
+      option.value = hora;
+      option.text = hora;
+      horaSelect.appendChild(option);
+    });
+
+    horaSelect.disabled = false;
+  } catch (error) {
+    console.error("Error al cargar citas:", error);
+    alert("❌ Ocurrió un error al verificar las citas.");
   }
+});
 
-  horasDisponibles.forEach(hora => {
-    const option = document.createElement('option');
-    option.value = hora;
-    option.text = hora;
-    horaSelect.appendChild(option);
-  });
-
-  horaSelect.disabled = false;
 });
   window.agendarCita = async function () {
     const nombre = document.getElementById('nombre').value;
