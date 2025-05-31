@@ -279,10 +279,10 @@ document.getElementById('fecha').addEventListener('change', async function () {
   horaSelect.innerHTML = '';
 
   const opcionesPorDia = {
-    0: ["08:00", "11:00", "14:00", "17:00"], // Domingo
-    2: ["20:00"], // Martes
-    4: ["20:00"], // Jueves
-    6: ["15:00", "18:00"] // Sábado
+    0: ["08:00", "11:00", "14:00", "17:00"],
+    2: ["20:00"],
+    4: ["20:00"],
+    6: ["15:00", "18:00"]
   };
 
   const opciones = opcionesPorDia[diaSemana];
@@ -298,7 +298,9 @@ document.getElementById('fecha').addEventListener('change', async function () {
   try {
     const db = window.db;
     const citasRef = collection(db, "citas");
-    const snapshot = await getDocs(query(citasRef, where("fecha", "==", valorFecha))); // ← ESTA LÍNEA YA ESTÁ BIEN
+    const fechaFormatoFirebase = this.value;
+    const snapshot = await getDocs(query(citasRef, where("fecha", "==", fechaFormatoFirebase)));
+
     const citasDelDia = snapshot.docs.map(doc => doc.data());
     const horasOcupadas = citasDelDia.map(cita => cita.hora);
 
@@ -325,7 +327,6 @@ document.getElementById('fecha').addEventListener('change', async function () {
   }
 });
 
-});
   window.agendarCita = async function () {
     const nombre = document.getElementById('nombre').value;
     const telefono = document.getElementById('telefono').value;
