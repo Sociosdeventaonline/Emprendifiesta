@@ -274,18 +274,16 @@ function login() {
       document.getElementById('mensajeLogin').innerText = '';
     }
 
-if (sessionStorage.getItem("logueado") === "true") {
-  vendedorLogueado = true;
-  document.querySelector('.agenda-lista').style.display = 'block';
-  mostrarBotonCerrarSesion();
+document.addEventListener("DOMContentLoaded", () => {
+  if (sessionStorage.getItem("logueado") === "true") {
+    vendedorLogueado = true;
+    document.querySelector('.agenda-lista').style.display = 'block';
+    mostrarBotonCerrarSesion();
+    reiniciarTemporizadorInactividad();
+    renderCitas(); // ✅ Agrega esta línea
+  }
+});
 
-  // Esperamos a que el DOM esté completamente cargado antes de ejecutar renderCitas
-  window.addEventListener('DOMContentLoaded', () => {
-    renderCitas();
-  });
-
-  reiniciarTemporizadorInactividad();
-}
 
 
     function mostrarBotonCerrarSesion() {
