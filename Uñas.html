@@ -228,7 +228,7 @@ function login() {
 
     function enviarRecordatorio(cita) {
       const mensaje = `Hola ${cita.nombre}, este es un recordatorio de tu cita con Karina:%0A- Servicio: ${cita.servicio}%0A- Fecha: ${cita.fecha}%0A- Hora: ${cita.hora}`;
-       window.open(`https://wa.me/529991738710?text=${mensaje}`, '_blank');
+       window.location.href = `https://wa.me/529991738710?text=${mensaje}`;
     }
 
     function cerrarSesion() {
@@ -272,7 +272,7 @@ function login() {
     }
 
     const mensaje = `Hola Karina, nueva cita:%0A- Nombre: ${nombre}%0A- Tel: ${telefono}%0A- Servicio: ${servicio}%0A- Fecha: ${fecha}%0A- Hora: ${hora}`;
-    window.open(`https://wa.me/529991738710?text=${mensaje}`, '_blank');
+    window.location.href = `https://wa.me/529991738710?text=${mensaje}`;
 
     await addDoc(collection(db, "citas"), {
       nombre,
