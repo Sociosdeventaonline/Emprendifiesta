@@ -208,6 +208,26 @@
     };
 
     let vendedorLogueado = false;
+    let ultimaActividad = Date.now();
+let temporizadorInactividad;
+
+function reiniciarTemporizadorInactividad() {
+  clearTimeout(temporizadorInactividad);
+  temporizadorInactividad = setTimeout(() => {
+    cerrarSesion();
+    alert("Sesión cerrada por inactividad.");
+  }, 5 * 60 * 1000); // 5 minutos
+}
+
+["mousemove", "keydown", "click", "scroll"].forEach(evento => {
+  window.addEventListener(evento, () => {
+    if (vendedorLogueado) {
+      ultimaActividad = Date.now();
+      reiniciarTemporizadorInactividad();
+    }
+  });
+});
+
 
     function mostrarDescripcion() {
       const servicio = document.getElementById('servicios').value;
@@ -221,6 +241,8 @@ function login() {
 
   if (usuario === 'karina' && contrasena === '1234') {
     vendedorLogueado = true;
+    sessionStorage.setItem("logueado", "true");
+    reiniciarTemporizadorInactividad();
     document.querySelector('.agenda-lista').style.display = 'block';
     document.getElementById('loginBox').style.display = 'none';
     mensaje.innerText = 'Inicio de sesión exitoso';
@@ -244,10 +266,21 @@ function login() {
 
     function cerrarSesion() {
       vendedorLogueado = false;
+    sessionStorage.removeItem("logueado");
+    clearTimeout(temporizadorInactividad);
+
       document.querySelector('.agenda-lista').style.display = 'none';
       document.getElementById('logoutBox').style.display = 'none';
       document.getElementById('mensajeLogin').innerText = '';
     }
+
+    if (sessionStorage.getItem("logueado") === "true") {
+  vendedorLogueado = true;
+  document.querySelector('.agenda-lista').style.display = 'block';
+  mostrarBotonCerrarSesion();
+  renderCitas();
+  reiniciarTemporizadorInactividad();
+}
 
     function mostrarBotonCerrarSesion() {
       document.getElementById('logoutBox').style.display = 'block';
