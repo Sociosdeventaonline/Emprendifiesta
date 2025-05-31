@@ -197,6 +197,15 @@ header {
         <img src="img/aurum.png" alt="Logo del proveedor" style="max-height: 110px;">
       </div>
       <h2>Agenda</h2>
+     <div id="resumen-citas" style="background: #fff; padding: 10px; border-radius: 8px; border: 1px solid #ccc; font-size: 15px; color: #4b1f49; margin-bottom: 10px;">
+  🔄 Cargando resumen de citas...
+</div>
+
+      <div id="botonRecordatorios" style="text-align: center; margin-bottom: 10px; display: none;">
+  <button onclick="enviarRecordatoriosDeManana()" style="padding: 10px 20px; background-color: #6a1b9a; color: white; border: none; border-radius: 5px; cursor: pointer;">
+    Enviar recordatorios de mañana
+  </button>
+</div>
       <div style="margin-bottom: 15px;">
   <input type="text" id="buscador" placeholder="Buscar por nombre, fecha o servicio..." style="width: 100%; padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 5px;">
 </div>
@@ -291,10 +300,39 @@ window.vendedorLogueado = false;
     function mostrarBotonCerrarSesion() {
       document.getElementById('logoutBox').style.display = 'block';
     }
+    function enviarRecordatoriosDeManana() {
+  const citasRef = collection(db, "citas");
+  const hoy = new Date();
+  const manana = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate() + 1);
+  const yyyy = manana.getFullYear();
+  const mm = String(manana.getMonth() + 1).padStart(2, '0');
+  const dd = String(manana.getDate()).padStart(2, '0');
+  const fechaBusqueda = `${yyyy}-${mm}-${dd}`;
+
+  getDocs(query(citasRef, where("fecha", "==", fechaBusqueda)))
+    .then(snapshot => {
+      if (snapshot.empty) {
+        alert("No hay citas para mañana.");
+        return;
+      }
+
+      snapshot.forEach(docSnap => {
+        const data = docSnap.data();
+        const mensaje = `Hola ${data.nombre}, este es un recordatorio de tu cita con Karina:%0A- Servicio: ${data.servicio}%0A- Fecha: ${data.fecha}%0A- Hora: ${data.hora}`;
+        window.open(`https://wa.me/52${data.telefono}?text=${mensaje}`, '_blank');
+      });
+    })
+    .catch(error => {
+      console.error("Error al obtener citas:", error);
+      alert("Ocurrió un error al buscar las citas.");
+    });
+}
+
 function mostrarAgendaSiLogueado() {
   if (sessionStorage.getItem("logueado") === "true") {
     vendedorLogueado = true;
     document.querySelector('.agenda-lista').style.display = 'block';
+    document.getElementById('botonRecordatorios').style.display = 'block'; // 🔥 esta línea nueva
     mostrarBotonCerrarSesion();
     reiniciarTemporizadorInactividad();
     renderCitas(); // ✅ Aquí se cargan las citas en pantalla
@@ -434,11 +472,37 @@ window.renderCitas = function () {
     });
 
     // Ordenar las citas por fecha y hora
-    citas.sort((a, b) => {
-      const fechaA = new Date(`${a.fecha}T${a.hora}`);
-      const fechaB = new Date(`${b.fecha}T${b.hora}`);
-      return fechaA - fechaB;
-    });
+// Ordenar por fecha y hora
+citas.sort((a, b) => {
+  const fechaA = new Date(`${a.fecha}T${a.hora}`);
+  const fechaB = new Date(`${b.fecha}T${b.hora}`);
+  return fechaA - fechaB;
+});
+
+// Mostrar resumen de citas
+const hoy = new Date();
+const yyyy = hoy.getFullYear();
+const mm = String(hoy.getMonth() + 1).padStart(2, '0');
+const dd = String(hoy.getDate()).padStart(2, '0');
+const fechaHoy = `${yyyy}-${mm}-${dd}`;
+
+const manana = new Date(hoy);
+manana.setDate(hoy.getDate() + 1);
+const yyyyM = manana.getFullYear();
+const mmM = String(manana.getMonth() + 1).padStart(2, '0');
+const ddM = String(manana.getDate()).padStart(2, '0');
+const fechaManana = `${yyyyM}-${mmM}-${ddM}`;
+
+const total = citas.length;
+const hoyCount = citas.filter(c => c.fecha === fechaHoy).length;
+const mananaCount = citas.filter(c => c.fecha === fechaManana).length;
+
+document.getElementById("resumen-citas").innerHTML = `
+  🔢 Total de citas: <strong>${total}</strong><br>
+  🗓️ Hoy: <strong>${hoyCount}</strong> cita(s)<br>
+  📆 Mañana: <strong>${mananaCount}</strong> cita(s)
+`;
+
 
      citas.forEach((cita) => {
       const li = document.createElement('li');
