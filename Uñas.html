@@ -246,6 +246,28 @@ function login() {
     function mostrarBotonCerrarSesion() {
       document.getElementById('logoutBox').style.display = 'block';
     }
+
+
+  </script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+  import { getFirestore, collection, addDoc, serverTimestamp, onSnapshot, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+  import { getDocs, query, where } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBt86gD96-Z0y2Bb1H2YBnntmMPGukRLZ0",
+    authDomain: "cita-de-unas.firebaseapp.com",
+    projectId: "cita-de-unas",
+    storageBucket: "cita-de-unas.appspot.com",
+    messagingSenderId: "90298084135",
+    appId: "1:90298084135:web:e1a3d251f6d0af7c665682",
+    measurementId: "G-2JK7L0TCWV"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  window.db = db;
 document.getElementById('fecha').addEventListener('change', async function () {
   const fechaSeleccionada = new Date(this.value);
   const diaSemana = fechaSeleccionada.getDay(); // 0 = Domingo, 2 = Martes, 4 = Jueves, 6 = Sábado
@@ -296,28 +318,6 @@ document.getElementById('fecha').addEventListener('change', async function () {
 
   horaSelect.disabled = false;
 });
-
-  </script>
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-  import { getFirestore, collection, addDoc, serverTimestamp, onSnapshot, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
-  import { getDocs, query, where } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
-
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyBt86gD96-Z0y2Bb1H2YBnntmMPGukRLZ0",
-    authDomain: "cita-de-unas.firebaseapp.com",
-    projectId: "cita-de-unas",
-    storageBucket: "cita-de-unas.appspot.com",
-    messagingSenderId: "90298084135",
-    appId: "1:90298084135:web:e1a3d251f6d0af7c665682",
-    measurementId: "G-2JK7L0TCWV"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-  window.db = db;
-
   window.agendarCita = async function () {
     const nombre = document.getElementById('nombre').value;
     const telefono = document.getElementById('telefono').value;
