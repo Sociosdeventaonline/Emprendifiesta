@@ -508,13 +508,18 @@ document.getElementById("resumen-citas").innerHTML = `
       const li = document.createElement('li');
       li.innerText = `${cita.nombre} - ${cita.telefono} - ${cita.servicio} - ${cita.fecha} ${cita.hora}`;
 
-      if (window.vendedorLogueado) {
-        const btnEliminar = document.createElement('button');
-        btnEliminar.innerText = 'Eliminar';
-        btnEliminar.onclick = async () => {
-          await deleteDoc(doc(db, "citas", cita.id));
-        };
-        li.appendChild(btnEliminar);
+        if (sessionStorage.getItem("logueado") === "true") {
+const btnEliminar = document.createElement('button');
+btnEliminar.innerHTML = '🗑️ Eliminar';
+btnEliminar.style.backgroundColor = '#c62828';
+btnEliminar.style.marginLeft = '5px';
+btnEliminar.onclick = async () => {
+  if (confirm("¿Estás seguro de que deseas eliminar esta cita?")) {
+    await deleteDoc(doc(db, "citas", cita.id));
+  }
+};
+li.appendChild(btnEliminar);
+
 
         const btnRecordatorio = document.createElement('button');
         btnRecordatorio.innerText = 'Recordatorio';
