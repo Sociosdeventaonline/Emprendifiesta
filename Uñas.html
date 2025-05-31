@@ -244,7 +244,7 @@ function login() {
   </script>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-  import { getFirestore, collection, addDoc, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+  import { getFirestore, collection, addDoc, serverTimestamp, onSnapshot, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyBt86gD96-Z0y2Bb1H2YBnntmMPGukRLZ0",
@@ -291,17 +291,42 @@ function login() {
     document.getElementById('hora').value = '';
   };
 
-  window.renderCitas = async function () {
-    const lista = document.getElementById('lista-citas');
-    lista.innerHTML = '';
-    const querySnapshot = await getDocs(collection(db, "citas"));
-    querySnapshot.forEach((doc) => {
-      const cita = doc.data();
+window.renderCitas = function () {
+  const lista = document.getElementById('lista-citas');
+  lista.innerHTML = '';
+
+  const citasRef = collection(db, "citas");
+
+  onSnapshot(citasRef, (snapshot) => {
+    lista.innerHTML = ''; // Limpia antes de volver a pintar
+
+    snapshot.forEach((docSnap) => {
+      const cita = docSnap.data();
       const li = document.createElement('li');
       li.innerText = `${cita.nombre} - ${cita.telefono} - ${cita.servicio} - ${cita.fecha} ${cita.hora}`;
+
+      if (window.vendedorLogueado) {
+        const btnEliminar = document.createElement('button');
+        btnEliminar.innerText = 'Eliminar';
+        btnEliminar.onclick = async () => {
+          await deleteDoc(doc(db, "citas", docSnap.id));
+        };
+        li.appendChild(btnEliminar);
+
+        const btnRecordatorio = document.createElement('button');
+        btnRecordatorio.innerText = 'Recordatorio';
+        btnRecordatorio.style.marginLeft = '5px';
+        btnRecordatorio.onclick = () => {
+          const mensaje = `Hola ${cita.nombre}, este es un recordatorio de tu cita con Karina:%0A- Servicio: ${cita.servicio}%0A- Fecha: ${cita.fecha}%0A- Hora: ${cita.hora}`;
+          window.open(`https://wa.me/52${cita.telefono}?text=${mensaje}`, '_blank');
+        };
+        li.appendChild(btnRecordatorio);
+      }
+
       lista.appendChild(li);
     });
-  };
+  });
+};
 </script>
 </body>
 </html>
